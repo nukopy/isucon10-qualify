@@ -420,6 +420,9 @@ def post_estate():
     finally:
         cnx.close()
 
+@app.route('/health')
+def health():
+    return 'Health Check OK!!'
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=getenv("SERVER_PORT", 1323), debug=True, threaded=True)
