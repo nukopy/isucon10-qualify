@@ -56,7 +56,7 @@ rst-app:
 
 # ミドルウェアの設定を反映させる
 .PHONY: rst-ngx
-rst-mid:
+rst-ngx:
 	echo "===== Copy nginx settings... ====="
 	sudo cp $(PROJECT_ROOT)/config/nginx/nginx.conf /etc/nginx/nginx.conf
 	echo "----- Copied. -----"
@@ -65,7 +65,7 @@ rst-mid:
 	echo "----- Restarted. -----"
 
 .PHONY: rst-db
-rst-mid:
+rst-db:
 	echo "===== Copy mysql settings... ====="
 	sudo cp $(PROJECT_ROOT)/config/mysql/my.conf /etc/mysql/my.conf
 	echo "----- Copied. -----"
