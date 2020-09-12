@@ -1,0 +1,15 @@
+# isucon10
+Host web
+	User 
+	HostName 
+	IdentityFile ~/.ssh/id_rsa_nukopy_github
+
+Host db
+	User 
+	HostName 
+	IdentityFile ~/.ssh/id_rsa_nisucon2020
+
+Host redis
+	User 
+	HostName 
+	IdentityFile ~/.ssh/id_rsa_nisucon2020
