@@ -135,7 +135,7 @@ slow-off:
 	# sudo $(MYSQL_CMD) -e "set global slow_query_log = OFF;"
 
 # ログのローテート
-.PHONY: 
+.PHONY: rot-ngx
 rot-ngx:
 	$(eval when := $(shell date "+%Y%m%d-%H%M%S"))
 	mkdir -p ~/logs/$(when)
