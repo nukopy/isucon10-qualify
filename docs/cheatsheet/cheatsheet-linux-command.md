@@ -18,6 +18,14 @@ sudo systemctl start nginx
 sudo systemctl enable nginx
 ```
 
+## リソースの使用状況
+
+### CPU，メモリ
+
+htop でリソース（CPU，メモリ）の使用状況を見れる．
+
+- [「top」は時代遅れ！？これからは「htop」を使おう！](https://linuxfan.info/htop)
+
 ## SSH 接続関連
 
 - ターミナルからサーバへ SSH 接続

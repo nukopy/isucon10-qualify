@@ -22,7 +22,7 @@ PROJECT_ROOT:=/home/isucon/**
 .PHONY: commit
 commit:
 	git add .; \
-	git commit --allow-empty -m "bench"
+	git commit --allow-empty -m "Makefile test"
 
 .PHONY: push
 push: 
@@ -41,11 +41,13 @@ test:
 .PHONY: dev
 dev:
 	# TODO: flask の開発サーバを起動させるコマンド
+	echo "hello"
+
 .PHONY: restart-app
 restart-app:
 	# TODO: app の Unit ファイル名を入力
 	echo "===== Copy app.service settings... ====="
-	sudo cp $(PROJECT_ROOT)/nginx.conf /etc/nginx/nginx.conf
+	sudo cp $(PROJECT_ROOT)/config/nginx.conf /etc/nginx/nginx.conf
 	sudo cp $(PROJECT_ROOT)/my.conf /etc/mysql/my.conf
 	echo "----- Copied. -----"
 	echo "===== Restart middlewares... ====="
@@ -57,8 +59,8 @@ restart-app:
 .PHONY: restart-mid
 restart-mid:
 	echo "===== Copy middleware settings... ====="
-	sudo cp $(PROJECT_ROOT)/nginx.conf /etc/nginx/nginx.conf
-	sudo cp $(PROJECT_ROOT)/my.conf /etc/mysql/my.conf
+	sudo cp $(PROJECT_ROOT)/config/nginx/nginx.conf /etc/nginx/nginx.conf
+	sudo cp $(PROJECT_ROOT)/config/mysql/my.conf /etc/mysql/my.conf
 	echo "----- Copied. -----"
 	echo "===== Restart middlewares... ====="
 	sudo systemctl restart nginx
@@ -125,13 +127,7 @@ slow-off:
 	# sudo $(MYSQL_CMD) -e "set global slow_query_log = OFF;"
 
 # ログのローテート
-.PHONY: hello
-hello:
-	@echo "helloooooooo"
-.PHONY: when
-when: hello
-	@echo "hogehoge $(HOME)"
-# .PHONY: 
+.PHONY: 
 rot-ngx:
 	when=$(eval when := $(shell date "+%Y%m%d-%H%M%S"))
 	mkdir -p ~/logs/$(when)
