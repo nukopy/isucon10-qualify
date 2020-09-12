@@ -96,6 +96,9 @@ os:
 setup:
 	# install basic packages, pt-query-digest(percona-toolkit)
 	sudo apt-get update && sudo apt-get install -y dstat htop git unzip percona-toolkit
+	# git config
+	git config --global user.name "nukopy"
+	git config --global user.email "pytwbf201830@gmail.com"
 	# install kataribe
 	wget https://github.com/matsuu/kataribe/releases/download/v0.4.1/kataribe-v0.4.1_linux_amd64.zip -O kataribe.zip
 	unzip -o kataribe.zip
