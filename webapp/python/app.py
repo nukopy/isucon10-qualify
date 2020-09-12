@@ -25,7 +25,9 @@ mysql_connection_env = {
     "database": getenv("MYSQL_DBNAME", "isuumo"),
 }
 
-cnxpool = QueuePool(lambda: mysql.connector.connect(**mysql_connection_env), pool_size=10)
+cnxpool = QueuePool(
+    lambda: mysql.connector.connect(**mysql_connection_env), pool_size=10
+)
 
 
 def select_all(query, *args, dictionary=True):
@@ -61,13 +63,18 @@ def post_initialize():
 
 @app.route("/api/estate/low_priced", methods=["GET"])
 def get_estate_low_priced():
-    rows = select_all("SELECT * FROM estate ORDER BY rent ASC, id ASC LIMIT %s", (LIMIT,))
+    rows = select_all(
+        "SELECT * FROM estate ORDER BY rent ASC, id ASC LIMIT %s", (LIMIT,)
+    )
     return {"estates": camelize(rows)}
 
 
 @app.route("/api/chair/low_priced", methods=["GET"])
 def get_chair_low_priced():
-    rows = select_all("SELECT * FROM chair WHERE stock > 0 ORDER BY price ASC, id ASC LIMIT %s", (LIMIT,))
+    rows = select_all(
+        "SELECT * FROM chair WHERE stock > 0 ORDER BY price ASC, id ASC LIMIT %s",
+        (LIMIT,),
+    )
     return {"chairs": camelize(rows)}
 
 
@@ -192,7 +199,9 @@ def post_chair_buy(chair_id):
     try:
         cnx.start_transaction()
         cur = cnx.cursor(dictionary=True)
-        cur.execute("SELECT * FROM chair WHERE id = %s AND stock > 0 FOR UPDATE", (chair_id,))
+        cur.execute(
+            "SELECT * FROM chair WHERE id = %s AND stock > 0 FOR UPDATE", (chair_id,)
+        )
         chair = cur.fetchone()
         if chair is None:
             raise NotFound()
@@ -308,7 +317,10 @@ def post_estate_nazotte():
     latitudes = [c["latitude"] for c in coordinates]
     bounding_box = {
         "top_left_corner": {"longitude": min(longitudes), "latitude": min(latitudes)},
-        "bottom_right_corner": {"longitude": max(longitudes), "latitude": max(latitudes)},
+        "bottom_right_corner": {
+            "longitude": max(longitudes),
+            "latitude": max(latitudes),
+        },
     }
 
     cnx = cnxpool.connect()
@@ -331,9 +343,7 @@ def post_estate_nazotte():
         estates_in_polygon = []
         for estate in estates:
             query = "SELECT * FROM estate WHERE id = %s AND ST_Contains(ST_PolygonFromText(%s), ST_GeomFromText(%s))"
-            polygon_text = (
-                f"POLYGON(({','.join(['{} {}'.format(c['latitude'], c['longitude']) for c in coordinates])}))"
-            )
+            polygon_text = f"POLYGON(({','.join(['{} {}'.format(c['latitude'], c['longitude']) for c in coordinates])}))"
             geom_text = f"POINT({estate['latitude']} {estate['longitude']})"
             cur.execute(query, (estate["id"], polygon_text, geom_text))
             if len(cur.fetchall()) > 0:
@@ -362,7 +372,9 @@ def get_estate(estate_id):
 def get_recommended_estate(chair_id):
     chair = select_row("SELECT * FROM chair WHERE id = %s", (chair_id,))
     if chair is None:
-        raise BadRequest(f"Invalid format searchRecommendedEstateWithChair id : {chair_id}")
+        raise BadRequest(
+            f"Invalid format searchRecommendedEstateWithChair id : {chair_id}"
+        )
     w, h, d = chair["width"], chair["height"], chair["depth"]
     query = (
         "SELECT * FROM estate"
@@ -420,9 +432,11 @@ def post_estate():
     finally:
         cnx.close()
 
-@app.route('/health')
+
+@app.route("/health")
 def health():
-    return 'Health Check OK!!'
+    return "Health Check OK!!"
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=getenv("SERVER_PORT", 1323), debug=True, threaded=True)
