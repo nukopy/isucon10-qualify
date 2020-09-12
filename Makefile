@@ -47,11 +47,10 @@ dev:
 rst-app:
 	# TODO: サーバに入ったら Python app の Unit ファイル名を見にいく
 	echo "===== Copy app.service settings... ====="
-	sudo cp $(PROJECT_ROOT)/config/systemd/nginx.conf /etc/nginx/nginx.conf
-	sudo cp $(PROJECT_ROOT)/my.conf /etc/mysql/my.conf
+	sudo cp $(PROJECT_ROOT)/config/systemd/isuumo.python.service /etc/systemd/system/isuumo.python.service
 	echo "----- Copied. -----"
 	echo "===== Restart middlewares... ====="
-	sudo systemctl restart app.service
+	sudo systemctl restart isuumo.python.service
 	echo "----- Restarted. -----"
 
 # ミドルウェアの設定を反映させる
@@ -76,7 +75,7 @@ rst-db:
 # ログ
 .PHONY: log-ngx
 log-ngx:
-	tail -f $(NGX_LOG)
+	sudo tail -f $(NGX_LOG)
 
 ########################################
 # initial configuration
@@ -138,7 +137,7 @@ slow-off:
 # ログのローテート
 .PHONY: 
 rot-ngx:
-	when=$(eval when := $(shell date "+%Y%m%d-%H%M%S"))
+	$(eval when := $(shell date "+%Y%m%d-%H%M%S"))
 	mkdir -p ~/logs/$(when)
 	@if [ -f $(NGX_LOG) ]; then \
 		sudo mv -f $(NGX_LOG) ~/logs/$(when)/ ; \
@@ -147,7 +146,7 @@ rot-ngx:
 
 .PHONY: 
 rot-sql:
-	when=$(eval when := $(shell date "+%Y%m%d-%H%M%S"))
+	$(eval when := $(shell date "+%Y%m%d-%H%M%S"))
 	mkdir -p ~/logs/$(when)
 	@if [ -f $(MYSQL_LOG) ]; then \
 		sudo mv -f $(MYSQL_LOG) ~/logs/$(when)/ ; \
