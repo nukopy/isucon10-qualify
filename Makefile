@@ -22,7 +22,7 @@ PROJECT_ROOT:=/home/isucon/**
 .PHONY: commit
 commit:
 	git add .; \
-	git commit --allow-empty -m "Makefile test"
+	git commit --allow-empty -m "make commit"
 
 .PHONY: push
 push: 
@@ -43,27 +43,33 @@ dev:
 	# TODO: flask の開発サーバを起動させるコマンド
 	echo "hello"
 
-.PHONY: restart-app
-restart-app:
-	# TODO: app の Unit ファイル名を入力
+.PHONY: rst-app
+rst-app:
+	# TODO: サーバに入ったら Python app の Unit ファイル名を見にいく
 	echo "===== Copy app.service settings... ====="
-	sudo cp $(PROJECT_ROOT)/config/nginx.conf /etc/nginx/nginx.conf
+	sudo cp $(PROJECT_ROOT)/config/systemd/nginx.conf /etc/nginx/nginx.conf
 	sudo cp $(PROJECT_ROOT)/my.conf /etc/mysql/my.conf
 	echo "----- Copied. -----"
 	echo "===== Restart middlewares... ====="
-	sudo systemctl restart nginx
-	sudo systemctl restart mysql
+	sudo systemctl restart app.service
 	echo "----- Restarted. -----"
 
 # ミドルウェアの設定を反映させる
-.PHONY: restart-mid
-restart-mid:
-	echo "===== Copy middleware settings... ====="
+.PHONY: rst-ngx
+rst-mid:
+	echo "===== Copy nginx settings... ====="
 	sudo cp $(PROJECT_ROOT)/config/nginx/nginx.conf /etc/nginx/nginx.conf
+	echo "----- Copied. -----"
+	echo "===== Restart nginx... ====="
+	sudo systemctl restart nginx
+	echo "----- Restarted. -----"
+
+.PHONY: rst-db
+rst-mid:
+	echo "===== Copy mysql settings... ====="
 	sudo cp $(PROJECT_ROOT)/config/mysql/my.conf /etc/mysql/my.conf
 	echo "----- Copied. -----"
-	echo "===== Restart middlewares... ====="
-	sudo systemctl restart nginx
+	echo "===== Restart mysql... ====="
 	sudo systemctl restart mysql
 	echo "----- Restarted. -----"
 
@@ -151,4 +157,4 @@ rot-sql:
 
 # 全てのコードを
 .PHONY: deploy
-deploy:
+deploy: commit push pull
