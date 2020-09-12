@@ -26,7 +26,7 @@ commit:
 
 .PHONY: push
 push: 
-	git push
+	git push origin master
 
 .PHONY: pull
 pull: 
