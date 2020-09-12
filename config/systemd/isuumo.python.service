@@ -12,6 +12,7 @@ Group=isucon
 ExecStart=/home/isucon/local/python/bin/gunicorn -b localhost:5000 --config gunicornf.py app:app
 
 Restart   = always
+RestartSec = 3
 Type      = simple
 [Install]
 WantedBy=multi-user.target
