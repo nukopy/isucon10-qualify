@@ -22,7 +22,7 @@ PROJECT_ROOT:=/home/isucon/**
 .PHONY: commit
 commit:
 	git add .; \
-	git commit --allow-empty -m "make commit"
+	git commit --allow-empty -m "$(msg)"
 
 .PHONY: push
 push: 
