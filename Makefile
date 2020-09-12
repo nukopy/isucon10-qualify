@@ -3,8 +3,7 @@ MYSQL_LOG:=/var/log/mysql/slow.log
 
 SLACKCAT:=slackcat --tee --channel isucon10
 
-# TODO: 当日設定する
-PROJECT_ROOT:=/home/isucon/**
+PROJECT_ROOT:=/home/isucon/isuumo
 
 # DB settings
 # DB_HOST:=127.0.0.1
@@ -45,11 +44,11 @@ dev:
 
 .PHONY: rst-app
 rst-app:
-	# TODO: サーバに入ったら Python app の Unit ファイル名を見にいく
 	echo "===== Copy app.service settings... ====="
 	sudo cp $(PROJECT_ROOT)/config/systemd/isuumo.python.service /etc/systemd/system/isuumo.python.service
 	echo "----- Copied. -----"
 	echo "===== Restart middlewares... ====="
+	sudo systemctl daemon-reload
 	sudo systemctl restart isuumo.python.service
 	echo "----- Restarted. -----"
 
@@ -117,12 +116,13 @@ setup:
 
 # アクセスログ解析 with kataribe(リポジトリのルートディレクトリで実行)
 .PHONY: kataru
+kataru:
 	sudo cat $(NGX_LOG) | kataribe -f ./kataribe.toml | $(SLACKCAT) --filename kataru.prof
 
 # スロークエリログ解析
 .PHONY: slow
 slow:
-	sudo pt-query-digest $(MYSQL_LOG) | $(SLACKCAT)
+	sudo pt-query-digest $(MYSQL_LOG) | $(SLACKCAT) --filename slow-summary.txt
 
 .PHONY: slow-on
 slow-on:
@@ -144,14 +144,19 @@ rot-ngx:
 	fi
 	sudo systemctl restart nginx
 
-.PHONY: 
-rot-sql:
+.PHONY: rot-db 
+rot-db:
 	$(eval when := $(shell date "+%Y%m%d-%H%M%S"))
 	mkdir -p ~/logs/$(when)
 	@if [ -f $(MYSQL_LOG) ]; then \
 		sudo mv -f $(MYSQL_LOG) ~/logs/$(when)/ ; \
 	fi
 	sudo systemctl restart mysql
+
+# ベンチを回す前に実行
+.PHONY: before-bench
+before-bench: rot-ngx rst-ngx rot-db rst-db rst-app
+
 
 ########################################
 # deploy

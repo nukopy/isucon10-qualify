@@ -9,7 +9,7 @@ PIDFile=/home/isucon/isuumo/webapp/python/server.pid
 
 User=isucon
 Group=isucon
-ExecStart=/home/isucon/local/python/bin/python app.py
+ExecStart=/home/isucon/local/python/bin/gunicorn -b localhost:5000 --config gunicornf.py app:app
 
 Restart   = always
 Type      = simple
