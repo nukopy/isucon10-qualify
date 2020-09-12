@@ -49,6 +49,7 @@ rst-app:
 	echo "----- Copied. -----"
 	echo "===== Restart middlewares... ====="
 	sudo systemctl daemon-reload
+	sleep 5
 	sudo systemctl restart isuumo.python.service
 	echo "----- Restarted. -----"
 
@@ -155,7 +156,8 @@ rot-db:
 
 # ベンチを回す前に実行
 .PHONY: before-bench
-before-bench: rot-ngx rst-ngx rot-db rst-db rst-app
+# before-bench: rot-ngx rst-ngx rot-db rst-db rst-app
+before-bench: rot-ngx rst-ngx rst-app
 
 
 ########################################
